@@ -1008,16 +1008,16 @@ input { font-family: inherit; }
   <!-- Early Access -->
   <div class="eyebrow reveal" id="early-access" style="margin-top:64px;align-self:center">EARLY ACCESS</div>
   <h2 class="section-headline reveal reveal-d1" style="text-align:center;align-self:center">BE FIRST IN THE SOUTH.</h2>
-  <p class="section-body reveal reveal-d2" style="text-align:center;max-width:480px;align-self:center">Launching in Louisiana, Texas, Georgia, and the Carolinas.</p>
+  <p class="section-body reveal reveal-d2" style="text-align:center;max-width:480px;align-self:center">Now launching in Louisiana.</p>
   <form class="access-form reveal reveal-d3" id="accessForm">
     <input type="text" name="name" placeholder="Your Name" required autocomplete="name">
     <input type="tel" name="phone" placeholder="Phone Number" required autocomplete="tel">
-    <button type="submit" class="btn-ghost">LET'S TALK</button>
-    <div class="form-fine">We'll text you updates. Never spam. Opt out anytime.</div>
+    <button type="submit" class="btn-ghost">TEXT ME</button>
+    <div class="form-fine">We'll text you right away to get started. Never spam. Reply STOP anytime.</div>
   </form>
   <div class="form-success" id="formSuccess">
-    <div class="form-success-msg">You're on the list. We'll be in touch.</div>
-    <div class="form-success-sub">SOUTHERN ROBOTICS · LAUNCHING SOON</div>
+    <div class="form-success-msg">Check your texts. We're reaching out now.</div>
+    <div class="form-success-sub">SOUTHERN ROBOTICS · LAFAYETTE, LA</div>
   </div>
 </section>
 
@@ -1158,6 +1158,14 @@ input { font-family: inherit; }
         { type: 'sent', text: 'make it cozy' },
         { type: 'typing' },
         { type: 'received', text: "Living room at 35%. Fireplace on. Coltrane in the kitchen. C'est bon." }
+      ]
+    },
+    {
+      timestamp: 'Wednesday 8:15 PM',
+      messages: [
+        { type: 'sent', text: 'the kitchen lights are way too bright' },
+        { type: 'typing' },
+        { type: 'received', text: 'Dimmed to 40%. Better, or want me to take them down more?' }
       ]
     }
   ];
@@ -1305,8 +1313,8 @@ input { font-family: inherit; }
    6. FORM SUBMISSION HANDLER
    ============================================================ */
 
-/* Webhook URL is patched automatically by sr_tunnel_launcher.sh on each boot */
-const WEBHOOK_URL = 'https://recordings-phoenix-purchased-browse.trycloudflare.com/submit';
+/* Stable URL — Google Apps Script handles form intake */
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwvEQlqjTTSiftOqcWn19k0re8rAOYzbfDXgsMrnGE2u0hA4Lhig7KOkp-S-Z72f6wx4A/exec';
 
 (function initForm() {
   const form = document.getElementById('accessForm');
@@ -1333,21 +1341,17 @@ const WEBHOOK_URL = 'https://recordings-phoenix-purchased-browse.trycloudflare.c
 
       const resp = await fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, phone }),
+        mode: 'no-cors',
       });
 
-      if (!resp.ok && resp.status !== 200) {
-        throw new Error(`HTTP ${resp.status}`);
-      }
-
-      // Success
+      // Apps Script returns opaque response with no-cors — treat as success
       form.style.display = 'none';
       success.classList.add('show');
     } catch (err) {
       console.error('Form submit error:', err);
       btn.disabled = false;
-      btn.textContent = "LET'S TALK";
+      btn.textContent = "TEXT ME";
       // Show inline error
       let errMsg = form.querySelector('.form-error');
       if (!errMsg) {
@@ -1356,7 +1360,7 @@ const WEBHOOK_URL = 'https://recordings-phoenix-purchased-browse.trycloudflare.c
         errMsg.style.cssText = 'color:rgba(255,100,100,0.85);font-size:13px;margin-top:8px;text-align:center;letter-spacing:0.08em;';
         form.appendChild(errMsg);
       }
-      errMsg.textContent = 'Something went wrong. Text us directly: southernrobotics.ai';
+      errMsg.textContent = 'Something went wrong. Text us directly: (337) 417-1910';
     }
   });
 })();
